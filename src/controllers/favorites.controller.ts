@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, BadRequestException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, BadRequestException, NotFoundException, UnprocessableEntityException, HttpCode, HttpStatus } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { FavoritesService } from 'src/services/favorites.service';
 
@@ -7,11 +7,13 @@ export class FavoritesController {
     constructor(private readonly favoritesService: FavoritesService) { }
 
     @Get()
+    @HttpCode(HttpStatus.OK)
     getAllFavorites() {
         return this.favoritesService.getFavorites();
     }
 
     @Post('track/:id')
+    @HttpCode(HttpStatus.CREATED)
     addTrackToFavorites(@Param('id') id: string) {
         this.validateUUID(id, 'trackId');
         const added = this.favoritesService.addTrack(id);
@@ -22,6 +24,7 @@ export class FavoritesController {
     }
 
     @Delete('track/:id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     removeTrackFromFavorites(@Param('id') id: string) {
         this.validateUUID(id, 'trackId');
         const removed = this.favoritesService.removeTrack(id);
@@ -31,6 +34,7 @@ export class FavoritesController {
     }
 
     @Post('album/:id')
+    @HttpCode(HttpStatus.CREATED)
     addAlbumToFavorites(@Param('id') id: string) {
         this.validateUUID(id, 'albumId');
         const added = this.favoritesService.addAlbum(id);
@@ -41,6 +45,7 @@ export class FavoritesController {
     }
 
     @Delete('album/:id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     removeAlbumFromFavorites(@Param('id') id: string) {
         this.validateUUID(id, 'albumId');
         const removed = this.favoritesService.removeAlbum(id);
@@ -50,6 +55,7 @@ export class FavoritesController {
     }
 
     @Post('artist/:id')
+    @HttpCode(HttpStatus.CREATED)
     addArtistToFavorites(@Param('id') id: string) {
         this.validateUUID(id, 'artistId');
         const added = this.favoritesService.addArtist(id);
@@ -60,6 +66,7 @@ export class FavoritesController {
     }
 
     @Delete('artist/:id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     removeArtistFromFavorites(@Param('id') id: string) {
         this.validateUUID(id, 'artistId');
         const removed = this.favoritesService.removeArtist(id);

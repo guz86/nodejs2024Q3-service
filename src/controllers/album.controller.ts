@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, BadRequestException, HttpCode, HttpStatus } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { CreateAlbumDto } from 'src/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/dto/update-album.dto';
@@ -9,11 +9,13 @@ export class AlbumController {
     constructor(private readonly albumService: AlbumService) { }
 
     @Get()
+    @HttpCode(HttpStatus.OK)
     getAllAlbums() {
         return this.albumService.findAll();
     }
 
     @Get(':id')
+    @HttpCode(HttpStatus.OK)
     getAlbumById(@Param('id') id: string) {
         if (!isUUID(id)) {
             throw new BadRequestException('Invalid albumId');
@@ -26,11 +28,13 @@ export class AlbumController {
     }
 
     @Post()
+    @HttpCode(HttpStatus.CREATED)
     createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
         return this.albumService.create(createAlbumDto);
     }
 
     @Put(':id')
+    @HttpCode(HttpStatus.OK)
     updateAlbum(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
         if (!isUUID(id)) {
             throw new BadRequestException('Invalid albumId');
@@ -43,6 +47,7 @@ export class AlbumController {
     }
 
     @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     deleteAlbum(@Param('id') id: string) {
         if (!isUUID(id)) {
             throw new BadRequestException('Invalid albumId');
