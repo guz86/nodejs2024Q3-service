@@ -9,6 +9,8 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { UpdatePasswordDto } from 'src/dto/update-password.dto';
@@ -16,6 +18,7 @@ import { UserService } from 'src/services/user.service';
 import { isUUID } from 'class-validator';
 
 @Controller('user')
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
