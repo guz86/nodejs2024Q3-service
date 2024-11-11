@@ -1,51 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { FavoritesResponse } from 'src/interfaces/favorites.interface';
-import { Track } from 'src/interfaces/track.interface';
-import { Album } from './album.service';
-import { Artist } from './artist.service';
+import { ArtistService } from './artist.service';
+import { AlbumService } from './album.service';
+import { TracksService } from './tracks.service';
 
 @Injectable()
 export class FavoritesService {
-    private favorites: FavoritesResponse = {
+    private favorites = {
         artists: [],
         albums: [],
         tracks: [],
     };
 
-    getFavorites(): FavoritesResponse {
+    constructor(
+        private readonly artistService: ArtistService,
+        private readonly albumService: AlbumService,
+        private readonly trackService: TracksService,
+    ) { }
+
+    getFavorites() {
         return this.favorites;
     }
 
-    addTrack(id: string): boolean {
-        const track = this.findTrackById(id);
-        if (!track) return false;
-        this.favorites.tracks.push(track);
-        return true;
-    }
-
-    removeTrack(id: string): boolean {
-        const index = this.favorites.tracks.findIndex((track) => track.id === id);
-        if (index === -1) return false;
-        this.favorites.tracks.splice(index, 1);
-        return true;
-    }
-
-    addAlbum(id: string): boolean {
-        const album = this.findAlbumById(id);
-        if (!album) return false;
-        this.favorites.albums.push(album);
-        return true;
-    }
-
-    removeAlbum(id: string): boolean {
-        const index = this.favorites.albums.findIndex((album) => album.id === id);
-        if (index === -1) return false;
-        this.favorites.albums.splice(index, 1);
-        return true;
-    }
-
     addArtist(id: string): boolean {
-        const artist = this.findArtistById(id);
+        const artist = this.artistService.findOne(id);
         if (!artist) return false;
         this.favorites.artists.push(artist);
         return true;
@@ -58,15 +35,31 @@ export class FavoritesService {
         return true;
     }
 
-    private findTrackById(id: string): Track | null {
-        return { id, name: 'Sample Track', artistId: null, albumId: null, duration: 240 };
+    addAlbum(id: string): boolean {
+        const album = this.albumService.findOne(id);
+        if (!album) return false;
+        this.favorites.albums.push(album);
+        return true;
     }
 
-    private findAlbumById(id: string): Album | null {
-        return { id, name: 'Sample Album', year: 2021, artistId: null };
+    removeAlbum(id: string): boolean {
+        const index = this.favorites.albums.findIndex((album) => album.id === id);
+        if (index === -1) return false;
+        this.favorites.albums.splice(index, 1);
+        return true;
     }
 
-    private findArtistById(id: string): Artist | null {
-        return { id, name: 'Sample Artist', grammy: false };
+    addTrack(id: string): boolean {
+        const track = this.trackService.getTrackById(id);
+        if (!track) return false;
+        this.favorites.tracks.push(track);
+        return true;
+    }
+
+    removeTrack(id: string): boolean {
+        const index = this.favorites.tracks.findIndex((track) => track.id === id);
+        if (index === -1) return false;
+        this.favorites.tracks.splice(index, 1);
+        return true;
     }
 }
