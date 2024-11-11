@@ -1,5 +1,4 @@
-export interface Track {
-    id: string;
+export class CreateTrackDto {
     name: string;
     artistId: string | null;
     albumId: string | null;
