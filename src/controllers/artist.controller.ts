@@ -10,6 +10,8 @@ import {
   BadRequestException,
   HttpCode,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { CreateArtistDto } from 'src/dto/create-artist.dto';
@@ -41,12 +43,14 @@ export class ArtistController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UsePipes(new ValidationPipe({ transform: true }))
   createArtist(@Body() createArtistDto: CreateArtistDto) {
     return this.artistService.create(createArtistDto);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
   updateArtist(
     @Param('id') id: string,
     @Body() updateArtistDto: UpdateArtistDto,

@@ -10,6 +10,8 @@ import {
   BadRequestException,
   HttpCode,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { CreateAlbumDto } from 'src/dto/create-album.dto';
@@ -41,12 +43,14 @@ export class AlbumController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UsePipes(new ValidationPipe({ transform: true }))
   createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumService.create(createAlbumDto);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
   updateAlbum(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid albumId');
