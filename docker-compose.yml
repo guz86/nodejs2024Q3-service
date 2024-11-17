@@ -1,18 +1,5 @@
-version: "3.8"
-
+version: '3.8'
 services:
-  app:
-    build: .
-    container_name: my_app
-    depends_on:
-      - postgres
-    environment:
-      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/mydatabase?schema=public"
-    networks:
-      - mynetwork
-    ports:
-      - "3000:3000"
-
   postgres:
     image: postgres:17
     container_name: postgres
@@ -20,11 +7,18 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: mydatabase
-    ports:
-      - "5432:5432"
     networks:
       - mynetwork
-
+  app:
+    build: .
+    container_name: my_app
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mydatabase?schema=public
+    networks:
+      - mynetwork
+    command: ["postgres:5432", "--", "npm", "run", "start"]
 networks:
   mynetwork:
     driver: bridge

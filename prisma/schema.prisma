@@ -14,21 +14,40 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String
-  email    String @unique
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  favorites Favorite[] 
 }
 
 model Album {
-  id     Int      @id @default(autoincrement())
-  title  String
-  tracks Track[]  // Обратное отношение к Track
+  id        Int      @id @default(autoincrement())
+  name      String
+  artistId  Int
+  artist    Artist  @relation(fields: [artistId], references: [id])
+  tracks    Track[]
 }
 
 model Track {
-  id       Int    @id @default(autoincrement())
-  name     String
-  albumId  Int
-  album    Album  @relation(fields: [albumId], references: [id])  // Отношение к Album
+  id      Int      @id @default(autoincrement())
+  name    String
+  albumId Int
+  album   Album    @relation(fields: [albumId], references: [id])
+  favorites Favorite[] 
 }
 
+model Artist {
+  id     Int     @id @default(autoincrement())
+  name   String
+  albums Album[]
+}
+
+model Favorite {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  trackId Int
+  track   Track  @relation(fields: [trackId], references: [id])
+}
