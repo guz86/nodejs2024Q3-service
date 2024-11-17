@@ -23,6 +23,13 @@ npm install
 npm start
 ```
 
+## Running application in Docker container
+
+```
+docker compose up -d
+```
+
+
 ## Testing
 
 After application running open new terminal and enter:
