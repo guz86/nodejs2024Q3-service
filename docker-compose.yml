@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    networks:
+      - mynetwork
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: my_app
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mydatabase?schema=public
+      PORT: 4000
+      CRYPT_SALT: 10
+      JWT_SECRET_KEY: secret123123
+      JWT_SECRET_REFRESH_KEY: secret123123
+      TOKEN_EXPIRE_TIME: 1h
+      TOKEN_REFRESH_EXPIRE_TIME: 24h
+    networks:
+      - mynetwork
+    ports:
+      - "4000:4000"
+    command: ["sh", "-c", "npx prisma migrate dev --name init && npm run start:dev"]
+
+networks:
+  mynetwork:
+    driver: bridge
